@@ -4,7 +4,7 @@ import os, json, re, smtplib
 from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from openai import OpenAI
+import openai
 from dotenv import load_dotenv
 from markupsafe import Markup
 
@@ -31,10 +31,13 @@ SMTP_USER = os.getenv("SMTP_USER", "info@chatpro-ai.nl")
 SMTP_PASS = os.getenv("SMTP_PASS", "")
 
 # -------------------------------------------------
-# OpenAI-config (optioneel, alleen fallback)
+# OpenAI-config (compatibel met openai==1.30.1)
 # -------------------------------------------------
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+if OPENAI_API_KEY:
+    openai.api_key = OPENAI_API_KEY
+else:
+    openai.api_key = None
 
 # -------------------------------------------------
 # Data laden
@@ -272,16 +275,16 @@ Het ChatPro-AI Team
         return "Top! ✅ Je demo-aanvraag is verzonden. Je ontvangt zo een bevestiging per e-mail."
 
 # -------------------------------------------------
-# AI fallback
+# AI fallback (OpenAI 1.30.1 compatibel)
 # -------------------------------------------------
 def ai_fallback(user_input):
-    if not client:
+    if not openai.api_key:
         print("⚠️ Geen OpenAI API-key, sla AI-fallback over.")
         return DATA.get("fallback", "Dat weet ik niet helemaal zeker 🤔. Zal ik je doorverbinden met het team via info@chatpro-ai.nl?")
     try:
         prompt = "Je bent Proxi, de virtuele assistent van ChatPro-AI. Antwoord professioneel, kort en vriendelijk in het Nederlands."
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": prompt},
                 {"role": "user", "content": user_input}
@@ -289,7 +292,7 @@ def ai_fallback(user_input):
             max_tokens=180,
             temperature=0.6
         )
-        return response.choices[0].message.content.strip()
+        return response["choices"][0]["message"]["content"].strip()
     except Exception as e:
         print("❌ Fout bij OpenAI:", e)
         return DATA.get("fallback", "Ik weet het niet helemaal zeker 🤔. Misschien kan ik je beter doorverbinden met het team via info@chatpro-ai.nl?")
