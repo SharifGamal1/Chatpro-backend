@@ -1,5 +1,5 @@
 (function(){
-  const DEFAULT_API = "http://127.0.0.1:5050";
+  const DEFAULT_API = "https://chatpro-backend-wu17.onrender.com";
   const BOT_ID = "chatpro_site";
   const WELCOME = "Hoi 👋 ik ben Proxi, de virtuele assistent van ChatPro-AI. Waar kan ik je vandaag mee helpen?";
 
