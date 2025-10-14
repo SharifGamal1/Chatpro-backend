@@ -1,11 +1,13 @@
 (function(){
+  // 🔗 Altijd vaste backend-URL voor assets en API
   const DEFAULT_API = "https://chatpro-backend-wu17.onrender.com";
   const BOT_ID = "chatpro_site";
   const WELCOME = "Hoi 👋 ik ben Proxi, de virtuele assistent van ChatPro-AI. Waar kan ik je vandaag mee helpen?";
 
-  const STATIC_BASE = /^https?:/i.test(window.location.origin) ? window.location.origin : DEFAULT_API;
+  // 🔧 Gebruik altijd Render voor statische bestanden
+  const STATIC_BASE = DEFAULT_API;
   const ICON_URL = `${STATIC_BASE}/static/proxi-icon.svg?v=3`;
-  const LOGO_URL = `${STATIC_BASE}/static/chatpro-mini.svg`; // nieuw mini-logo
+  const LOGO_URL = `${STATIC_BASE}/static/chatpro-mini.svg`;
 
   const SID_KEY = "proxi_session_id";
   function sid(){
