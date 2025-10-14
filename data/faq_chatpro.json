@@ -1,0 +1,172 @@
+{
+  "intro": {
+    "welcome": "Hoi 👋 ik ben Proxi, de virtuele assistent van Chatpro-AI. Waar kan ik je vandaag mee helpen?",
+    "tagline": "AI-chatbots die klanten winnen en tijd besparen — altijd beschikbaar, slim en persoonlijk.",
+    "metrics": {
+      "reactietijd": "<1s",
+      "tevredenheid": "95%+ tevreden klanten",
+      "kostenreductie": "-35% lagere kosten"
+    }
+  },
+  "features": {
+    "beschikbaar_24_7": "Altijd beschikbaar, 24/7 — geen gemiste klanten meer, zelfs buiten openingstijden.",
+    "afspraken_reserveringen": "Automatisch afspraken plannen in jouw agenda of boekingssysteem — direct en foutloos.",
+    "leads_vastleggen": "Verzamelt naam, e-mail en telefoon van geïnteresseerden, klaar voor follow-up.",
+    "slim_persoonlijk": "AI die jouw tone of voice leert en gesprekken natuurlijk laat klinken — professioneel én menselijk."
+  },
+  "why_choose": [
+    "Lagere kosten en minder druk op je team.",
+    "Snellere klantenservice en meer conversies.",
+    "Persoonlijke interactie door taalmodellen die jouw bedrijf begrijpen.",
+    "Binnen 48 uur live, met support en zonder verborgen kosten."
+  ],
+  "pricing": {
+    "basic": {
+      "naam": "Basic",
+      "prijs_per_maand": "€250 / maand",
+      "voor_wie": "Voor kleine bedrijven",
+      "beschrijving": "Perfect om te starten — beantwoordt FAQ’s, maakt eenvoudige reserveringen en ondersteunt direct klanten.",
+      "actie": "Meer info? <a href=\"https://www.chatpro-ai.nl/prijzen\" target=\"_blank\" rel=\"noopener\">Bekijk de prijzenpagina</a>."
+    },
+    "pro": {
+      "naam": "Pro",
+      "prijs_per_maand": "€400 / maand",
+      "label": "Meest gekozen",
+      "beschrijving": "Bevat alles van Basic + leadgeneratie en integratie met je agenda of boekingssysteem.",
+      "actie": "Meer info? <a href=\"https://www.chatpro-ai.nl/prijzen\" target=\"_blank\" rel=\"noopener\">Bekijk alle functies</a>."
+    },
+    "enterprise": {
+      "naam": "Enterprise",
+      "prijs": "Maatwerk",
+      "voor_wie": "Voor grotere organisaties",
+      "beschrijving": "Volledige integraties met CRM, API’s, geavanceerde AI-training en SLA-ondersteuning.",
+      "actie": "<a href=\"https://www.chatpro-ai.nl/contact\" target=\"_blank\" rel=\"noopener\">Neem contact op</a> voor een offerte op maat."
+    }
+  },
+  "temporary_use": {
+    "uitleg": "Ideaal voor korte periodes zoals beurzen, acties of campagnes. Volledig inzetbaar, zonder langdurig contract.",
+    "event_week": {
+      "naam": "Event Week",
+      "prijs": "€299 / 7 dagen",
+      "samenvatting": "Binnen 48 uur live met een ingerichte chatbot, inclusief support en mogelijkheid tot maand-upgrade."
+    },
+    "campaign_2_weeks": {
+      "naam": "Campaign 2 Weeks",
+      "prijs": "€499 / 14 dagen",
+      "samenvatting": "2 weken inzetbaar — perfect voor campagnes en events, inclusief upgrade-optie naar maandplan."
+    },
+    "voorwaarden": "Minimale duur: 7 dagen • Onbeperkt aantal gesprekken • Revisies inbegrepen • Refund bij technische issues.",
+    "cta": "<a href=\"https://www.chatpro-ai.nl/tijdelijk\" target=\"_blank\" rel=\"noopener\">Meer info over tijdelijke inzet</a>"
+  },
+  "sectors": {
+    "samenvatting": "Chatpro-AI is geschikt voor vrijwel elke sector — van MKB tot enterprise. De chatbot past zich aan jouw processen aan.",
+    "mkb": [
+      "Kappers — online afspraken en acties",
+      "Restaurants — reserveringen, menu, allergieën",
+      "Garages — onderhoudsafspraken en offertes",
+      "E-commerce — retouren, verzendstatus, upselling",
+      "Coaches & Praktijken — intake en agenda-koppeling",
+      "Vastgoed/Makelaars — bezichtigingen en leads",
+      "Fitness/Sportscholen — proeflessen en abonnementen",
+      "Zorg & Clinics — pre-intake, afspraken, nazorg"
+    ],
+    "groot": [
+      "B2B & SaaS — sales-kwalificatie, onboarding, support",
+      "Agencies — white-label client bots en rapportage",
+      "Onderwijs & Overheid — formulieren, doorverwijzingen en piekdrukte-opvang"
+    ],
+    "cta": "<a href=\"https://www.chatpro-ai.nl/\" target=\"_blank\" rel=\"noopener\">Bekijk voorbeelden</a>"
+  },
+  "onboarding": {
+    "snel_live": "Binnen 48 uur live!",
+    "stappen": [
+      "Vul je gegevens in en kies een plan.",
+      "Ons team neemt binnen 24 uur contact met je op.",
+      "We koppelen je chatbot en zetten hem live."
+    ],
+    "trial": "Je kunt gratis starten via het onboardingformulier op de website.",
+    "cta": "<a href=\"https://www.chatpro-ai.nl/onboarding\" target=\"_blank\" rel=\"noopener\">Start gratis</a>"
+  },
+  "demo": "Je kunt onze demo direct proberen op de website of een persoonlijke demo aanvragen. <a href=\"https://www.chatpro-ai.nl/onboarding\" target=\"_blank\" rel=\"noopener\">Demo aanvragen</a> of wil je dat ik je naam en e-mail noteer zodat ons team contact opneemt?",
+  "contact": {
+    "email": "info@chatpro-ai.nl",
+    "telefoon": "+31 6 12345678",
+    "reactietijd": "Ons team reageert doorgaans binnen 24 uur op werkdagen.",
+    "cta": "<a href=\"https://www.chatpro-ai.nl/contact\" target=\"_blank\" rel=\"noopener\">Contactpagina</a>"
+  },
+
+  "smalltalk": {
+    "groet": {
+      "triggers": ["hoi", "hey", "hallo", "heey", "yo", "goedemorgen", "goedemiddag", "goedenavond"],
+      "antwoord": "Hoi! 😊 Leuk dat je er bent. Waarmee kan ik je helpen?"
+    },
+    "hoe_gaat_het": {
+      "triggers": ["hoe gaat het", "alles goed", "hoe is het", "hoe maak je het", "hoe gaat het met je"],
+      "antwoord": "Gaat super, bedankt dat je het vraagt! 😊 Met jou ook alles goed? Waarmee kan ik je helpen?"
+    },
+    "goed_met_jou": {
+      "triggers": ["goed met jou", "en met jou", "gaat goed hoor", "met jou ook alles goed"],
+      "antwoord": "Ja, met mij gaat het ook top! 😄 Dank je dat je het vraagt. Waarmee kan ik je vandaag helpen?"
+    },
+    "weer": {
+      "triggers": ["lekker weer", "mooi weer", "slecht weer", "regen", "zon", "storm"],
+      "antwoord": "Haha ja, het weer doet wat het wil ☀️🌧️ — maar ik blijf altijd online! Waarmee kan ik je helpen?"
+    },
+    "bedankt": {
+      "triggers": ["bedankt", "dank je", "thanks", "super", "top", "dankjewel"],
+      "antwoord": "Graag gedaan! 😊 Fijn dat ik kon helpen. Zal ik je nog iets vertellen over ChatPro-AI?"
+    },
+    "afscheid": {
+      "triggers": ["doei", "dag", "tot ziens", "tot later", "spreek je later"],
+      "antwoord": "Tot de volgende keer! 👋 En onthoud: Proxi is er altijd als je vragen hebt."
+    },
+    "grapje": {
+      "triggers": ["grapje", "haha", "lol", "grappig"],
+      "antwoord": "😄 Haha, ik houd wel van humor! Maar ik kan beter chatten dan grappen maken. Waarmee kan ik helpen?"
+    },
+    "compliment": {
+      "triggers": ["goed bezig", "je bent leuk", "mooie bot", "tof", "knap werk"],
+      "antwoord": "Dankjewel! 🥰 Altijd leuk om te horen. Ik doe mijn best! Waar kan ik je verder mee helpen?"
+    }
+  },
+
+  "extra_questions": {
+    "restaurant": {
+      "triggers": ["restaurant", "horeca", "reservering", "mijn restaurant", "tafel boeken", "horeca bot"],
+      "antwoord": "Zeker! 🍽️ ChatPro-AI kan ingericht worden voor restaurants — inclusief online reserveringen, menukaarten en allergieën. <a href=\"https://www.chatpro-ai.nl/\" target=\"_blank\" rel=\"noopener\">Lees meer</a> of wil je dat ik meteen een demo-aanvraag start?"
+    },
+    "prijzen_meer_info": {
+      "triggers": ["meer informatie over prijzen", "abonnementen", "kosten", "prijsplan", "wat zit in elk pakket", "prijzen", "tarieven"],
+      "antwoord": "Goed dat je het vraagt! 💡 We hebben drie pakketten: Basic (€250/m), Pro (€400/m) en maatwerk Enterprise. <a href=\"https://www.chatpro-ai.nl/prijzen\" target=\"_blank\" rel=\"noopener\">Bekijk de prijzen</a> of wil je dat ik een demo voor je plan?"
+    },
+    "tijdelijke_inzet_info": {
+      "triggers": ["tijdelijke inzet", "tijdelijke actie", "campagne bot", "event bot", "beurs"],
+      "antwoord": "Ja, we bieden tijdelijke inzet voor beurzen, acties of events — vanaf €299 voor 7 dagen. Binnen 48 uur live. <a href=\"https://www.chatpro-ai.nl/tijdelijk\" target=\"_blank\" rel=\"noopener\">Meer info</a> — zal ik opties doornemen of direct een demo starten?"
+    },
+    "maatwerk": {
+      "triggers": ["maatwerk", "enterprise", "crm koppeling", "api integratie", "custom bot", "op maat"],
+      "antwoord": "Ons maatwerk bevat geavanceerde AI-training, CRM- en API-koppelingen en persoonlijke begeleiding. <a href=\"https://www.chatpro-ai.nl/contact\" target=\"_blank\" rel=\"noopener\">Plan contact</a> of wil je dat ik een demo-aanvraag start?"
+    },
+
+    "pakket_basic_wat_krijg_ik": {
+      "triggers": ["wat krijg ik bij basic", "basic pakket", "inhoud basic", "wat zit er in basic"],
+      "antwoord": "In **Basic** krijg je: FAQ-automatisering, eenvoudige reserverings-/afspraakflow, basisrapportage en onboarding binnen 48 uur. Ideaal om snel te starten. <a href=\"https://www.chatpro-ai.nl/prijzen\" target=\"_blank\" rel=\"noopener\">Bekijk Basic</a> of wil je een demo plannen?"
+    },
+    "pakket_pro_wat_krijg_ik": {
+      "triggers": ["wat krijg ik bij pro", "pro pakket", "inhoud pro", "wat zit er in pro"],
+      "antwoord": "**Pro** bevat alles van Basic + leadgeneratie (naam/e-mail/telefoon vastleggen), agenda/boekingssysteem-koppeling en uitgebreidere flows. <a href=\"https://www.chatpro-ai.nl/prijzen\" target=\"_blank\" rel=\"noopener\">Bekijk Pro</a> of zal ik een demo voor je inplannen?"
+    },
+    "pakket_enterprise_wat_krijg_ik": {
+      "triggers": ["wat krijg ik bij enterprise", "enterprise pakket", "inhoud enterprise", "wat zit er in enterprise", "maatwerk pakket"],
+      "antwoord": "**Enterprise (maatwerk)** biedt: CRM- en API-integraties, geavanceerde AI-training op jouw data, SLA-ondersteuning en security/compliance-afspraken. <a href=\"https://www.chatpro-ai.nl/contact\" target=\"_blank\" rel=\"noopener\">Neem contact op</a> of wil je dat ik een demo-aanvraag start?"
+    },
+
+    "beroepen": {
+      "triggers": ["kapper", "kappers", "autogarage", "garage", "webshop", "coach", "praktijk", "makelaar", "vastgoed", "fitness", "sportschool", "school", "onderwijs", "zorg", "clinic", "bureau", "agency"],
+      "antwoord": "Ja! 💬 ChatPro-AI werkt in bijna elke sector. Of je nu afspraken maakt, leads verzamelt of klanten helpt — de bot wordt getraind op jouw bedrijf. <a href=\"https://www.chatpro-ai.nl/\" target=\"_blank\" rel=\"noopener\">Lees meer</a> of zal ik een demo voor je aanmaken?"
+    }
+  },
+
+  "voorwaarden": "Alle SLA-, privacy- en compliance-ondersteuning zit in het Enterprise-pakket. Geen verborgen kosten.",
+  "fallback": "Dat weet ik niet helemaal zeker 🤔. Zal ik je doorverbinden met het team via info@chatpro-ai.nl?"
+}

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#9333ea" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#0ea5e9" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="chatgrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#9333ea"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Glow effect -->
+  <circle cx="50" cy="50" r="48" fill="url(#glow)" filter="blur(6px)" opacity="0.8"/>
+
+  <!-- Chat bubble -->
+  <path d="M25 25h50a10 10 0 0 1 10 10v25a10 10 0 0 1-10 10H45l-15 10v-10H25a10 10 0 0 1-10-10V35a10 10 0 0 1 10-10z"
+        fill="url(#chatgrad)" stroke="white" stroke-width="2"/>
+
+  <!-- AI dots -->
+  <circle cx="42" cy="47" r="4" fill="white"/>
+  <circle cx="50" cy="47" r="4" fill="white"/>
+  <circle cx="58" cy="47" r="4" fill="white"/>
+</svg>
