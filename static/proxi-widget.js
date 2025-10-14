@@ -46,23 +46,36 @@
     }
     @keyframes fadeIn{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)}}
 
-    #proxi-root{position:fixed; right:25px; bottom:100px; width:330px; height:460px; display:none; z-index:99998; font-family:Inter,system-ui,sans-serif}
-    #proxi-box{display:flex; flex-direction:column; height:100%; border-radius:14px; box-shadow:0 10px 25px rgba(0,0,0,.2); background:#fff; border:1px solid #e7e7e9; overflow:hidden}
+    #proxi-root{
+      position:fixed; right:25px; bottom:100px;
+      width:330px; height:460px; display:none;
+      z-index:99998; font-family:Inter,system-ui,sans-serif;
+      transition: bottom .3s ease;
+    }
+
+    #proxi-box{
+      display:flex; flex-direction:column; height:100%;
+      border-radius:14px; box-shadow:0 10px 25px rgba(0,0,0,.2);
+      background:#fff; border:1px solid #e7e7e9; overflow:hidden;
+    }
+
     #proxi-head{display:flex; align-items:center; gap:10px; padding:10px 14px; background:#8b5cf6; color:#fff}
     #proxi-head .title{font-weight:700; font-size:14px}
+
     #proxi-messages{flex:1; padding:10px; overflow:auto; background:#f9fafb}
     .msg{max-width:82%; padding:8px 11px; border-radius:10px; margin:6px 0; font-size:14px; line-height:1.4}
     .msg a{text-decoration:underline; color:#0ea5e9; word-break:break-word}
     .bot{background:#fff; border:1px solid #ececf0; color:#111}
     .user{background:#8b5cf6; color:#fff; margin-left:auto}
-    #proxi-input{display:flex; border-top:1px solid #ececf0}
-    #proxi-input input{flex:1; border:none; padding:10px; outline:none; font-size:14px}
+
+    #proxi-input{display:flex; border-top:1px solid #ececf0; background:#fff}
+    #proxi-input input{flex:1; border:none; padding:10px; outline:none; font-size:14px; min-width:0}
     #proxi-input button{border:none; background:#0ea5e9; color:#fff; padding:0 12px; font-weight:600; cursor:pointer}
+
     .row{display:flex; gap:6px; flex-wrap:wrap; margin:6px 0}
     .chip{background:#eef6ff; border:1px solid #dbeafe; color:#0b4b76; border-radius:999px; padding:5px 9px; font-size:12px; cursor:pointer}
     .chip:hover{filter:brightness(.97)}
 
-    /* Footer credit */
     #proxi-foot{
       border-top:1px solid #ececf0;
       padding:8px 10px; font-size:12px; color:#6b7280;
@@ -71,6 +84,16 @@
     #proxi-foot img{width:14px; height:14px; vertical-align:middle}
     #proxi-foot a{color:#6b7280; text-decoration:none; font-weight:500}
     #proxi-foot a:hover{text-decoration:underline}
+
+    @media (max-width:600px){
+      #proxi-root{
+        right:0; bottom:0; width:100%; height:100%;
+        border-radius:0;
+      }
+      #proxi-box{
+        border-radius:0;
+      }
+    }
   `;
   const style = document.createElement("style");
   style.textContent = css;
@@ -176,5 +199,11 @@
   $send.onclick = ()=>send($text.value.trim());
   $text.addEventListener("keydown", e=>{
     if(e.key==="Enter") send($text.value.trim());
+  });
+
+  // 📱 Fix voor mobiel toetsenbord (iOS & Android)
+  window.visualViewport?.addEventListener("resize", ()=>{
+    const vh = window.visualViewport.height;
+    root.style.bottom = `${window.innerHeight - vh}px`;
   });
 })();
