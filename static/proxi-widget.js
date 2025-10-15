@@ -1,32 +1,52 @@
-(function(){
-  // 🔗 Altijd vaste backend-URL voor assets en API
+(function () {
+  // 🔗 Backend & assets (Render)
   const DEFAULT_API = "https://chatpro-backend-wu17.onrender.com";
   const BOT_ID = "chatpro_site";
-  const WELCOME = "Hoi 👋 ik ben Proxi, de virtuele assistent van ChatPro-AI. Waar kan ik je vandaag mee helpen?";
+  const WELCOME =
+    "Hoi 👋 ik ben Proxi, de virtuele assistent van ChatPro-AI. Waar kan ik je vandaag mee helpen?";
 
-  // 🔧 Gebruik altijd Render voor statische bestanden
   const STATIC_BASE = DEFAULT_API;
-  const ICON_URL = `${STATIC_BASE}/static/proxi-icon.svg?v=3`;
-  const LOGO_URL = `${STATIC_BASE}/static/chatpro-mini.svg`;
+  const ICON_URL = `${STATIC_BASE}/static/proxi-icon.svg?v=3`;   // launcher
+  const LOGO_URL = `${STATIC_BASE}/static/chatpro-mini.svg`;     // credit
 
+  // ✅ eenvoudige inline SVG’s zodat er geen extra assets nodig zijn
+  const AVATAR_SVG =
+    `<svg viewBox="0 0 64 64" width="22" height="22" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="32" fill="#fff"/>
+      <circle cx="32" cy="26" r="10" fill="#fde68a"/>
+      <path d="M16 50a16 16 0 0 1 32 0" fill="#a78bfa"/>
+     </svg>`;
+  const DOT_SVG =
+    `<svg viewBox="0 0 10 10" width="8" height="8" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="5" cy="5" r="5" fill="#22c55e"/>
+     </svg>`;
+
+  // -------------------------------------
+  // Session
+  // -------------------------------------
   const SID_KEY = "proxi_session_id";
-  function sid(){
+  function sid() {
     let id = localStorage.getItem(SID_KEY);
-    if(!id){
+    if (!id) {
       id = "sid_" + Math.random().toString(36).slice(2);
       localStorage.setItem(SID_KEY, id);
     }
     return id;
   }
 
-  // 🌈 CSS met glow en subtiele paars
+  // -------------------------------------
+  // CSS
+  // -------------------------------------
   const css = `
+    :root{
+      --proxi-safe: env(safe-area-inset-bottom);
+    }
+
     #proxi-button{
       position:fixed; bottom:25px; right:25px;
       width:60px; height:60px; border-radius:50%;
       display:flex; align-items:center; justify-content:center;
-      cursor:pointer; z-index:99999;
-      background:transparent;
+      cursor:pointer; z-index:99999; background:transparent;
       box-shadow:0 0 15px rgba(139,92,246,.6), 0 0 25px rgba(14,165,233,.4);
       animation:glowPulse 2.5s infinite alternate;
     }
@@ -50,7 +70,8 @@
       position:fixed; right:25px; bottom:100px;
       width:330px; height:460px; display:none;
       z-index:99998; font-family:Inter,system-ui,sans-serif;
-      transition: bottom .3s ease;
+      transition:transform .25s ease, bottom .25s ease;
+      will-change: transform;
     }
 
     #proxi-box{
@@ -59,18 +80,47 @@
       background:#fff; border:1px solid #e7e7e9; overflow:hidden;
     }
 
-    #proxi-head{display:flex; align-items:center; gap:10px; padding:10px 14px; background:#8b5cf6; color:#fff}
+    #proxi-head{
+      display:flex; align-items:center; gap:10px; padding:10px 14px;
+      background:#8b5cf6; color:#fff
+    }
     #proxi-head .title{font-weight:700; font-size:14px}
+    #proxi-head .face{display:flex; align-items:center; gap:6px}
+    #proxi-head .dot{width:8px; height:8px}
 
-    #proxi-messages{flex:1; padding:10px; overflow:auto; background:#f9fafb}
+    #proxi-messages{
+      flex:1; padding:10px; overflow:auto; background:#f9fafb;
+      -webkit-overflow-scrolling: touch;
+    }
+
     .msg{max-width:82%; padding:8px 11px; border-radius:10px; margin:6px 0; font-size:14px; line-height:1.4}
     .msg a{text-decoration:underline; color:#0ea5e9; word-break:break-word}
     .bot{background:#fff; border:1px solid #ececf0; color:#111}
     .user{background:#8b5cf6; color:#fff; margin-left:auto}
 
-    #proxi-input{display:flex; border-top:1px solid #ececf0; background:#fff}
-    #proxi-input input{flex:1; border:none; padding:10px; outline:none; font-size:14px; min-width:0}
-    #proxi-input button{border:none; background:#0ea5e9; color:#fff; padding:0 12px; font-weight:600; cursor:pointer}
+    /* input-toolbar sticky onderin chat, boven safe-area */
+    #proxi-toolbar{
+      display:flex; gap:14px; align-items:center; padding:8px 12px;
+      border-top:1px solid #ececf0; background:#fff;
+    }
+    #proxi-toolbar button{
+      border:none; background:#eef2ff; color:#4f46e5;
+      padding:8px 10px; border-radius:10px; font-weight:600; cursor:pointer;
+    }
+
+    #proxi-input{
+      display:flex; gap:8px; align-items:center;
+      border-top:1px solid #ececf0; background:#fff;
+      padding:8px 10px calc(10px + var(--proxi-safe));
+      position:sticky; bottom:0; /* sticky binnen de chat */
+    }
+    #proxi-input input{
+      flex:1; border:1px solid #e5e7eb; padding:10px 12px; outline:none; font-size:14px; min-width:0;
+      border-radius:10px; background:#fff;
+    }
+    #proxi-input button{
+      border:none; background:#0ea5e9; color:#fff; padding:10px 14px; font-weight:700; cursor:pointer; border-radius:10px;
+    }
 
     .row{display:flex; gap:6px; flex-wrap:wrap; margin:6px 0}
     .chip{background:#eef6ff; border:1px solid #dbeafe; color:#0b4b76; border-radius:999px; padding:5px 9px; font-size:12px; cursor:pointer}
@@ -85,50 +135,65 @@
     #proxi-foot a{color:#6b7280; text-decoration:none; font-weight:500}
     #proxi-foot a:hover{text-decoration:underline}
 
+    /* 📱 Mobile full screen */
     @media (max-width:600px){
       #proxi-root{
-        right:0; bottom:0; width:100%; height:100%;
-        border-radius:0;
+        right:0; bottom:0; width:100vw; height:100vh;
+        border-radius:0; transform:translateY(0);  /* basispositie */
       }
-      #proxi-box{
-        border-radius:0;
-      }
+      #proxi-box{border-radius:0}
     }
   `;
   const style = document.createElement("style");
   style.textContent = css;
   document.head.appendChild(style);
 
-  // 🟣 knop met icoon
+  // -------------------------------------
+  // Launcher button
+  // -------------------------------------
   const btn = document.createElement("div");
   btn.id = "proxi-button";
   btn.innerHTML = `<img src="${ICON_URL}" alt="Proxi"/>`;
   document.body.appendChild(btn);
 
-  // 💬 Welkomstballonnetje
+  // -------------------------------------
+  // Welkomstballonnetje
+  // -------------------------------------
   const popup = document.createElement("div");
   popup.id = "proxi-popup";
   popup.innerText = WELCOME;
   document.body.appendChild(popup);
 
-  // 🧠 Chatvenster
+  // -------------------------------------
+  // Chat window
+  // -------------------------------------
   const root = document.createElement("div");
   root.id = "proxi-root";
   root.innerHTML = `
     <div id="proxi-box">
       <div id="proxi-head">
-        <div style="width:8px;height:8px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.15)"></div>
+        <div class="face">${AVATAR_SVG}<span class="dot">${DOT_SVG}</span></div>
         <div class="title">Proxi</div>
       </div>
+
       <div id="proxi-messages"></div>
+
+      <div id="proxi-toolbar">
+        <button type="button" id="proxi-tool-chat">💬 Chat</button>
+        <button type="button" id="proxi-tool-mail">@</button>
+        <button type="button" id="proxi-tool-call">☎︎</button>
+        <button type="button" id="proxi-tool-wa">WhatsApp</button>
+      </div>
+
+      <div id="proxi-input">
+        <input id="proxi-text" type="text" placeholder="Typ hier..."/>
+        <button id="proxi-send">Verstuur</button>
+      </div>
+
       <div id="proxi-foot">
         <img src="${LOGO_URL}" alt="ChatPro-AI logo"/>
         <span>Gebouwd door</span>
         <a href="https://www.chatpro-ai.nl" target="_blank" rel="noopener">ChatPro-AI</a>
-      </div>
-      <div id="proxi-input">
-        <input id="proxi-text" type="text" placeholder="Typ hier..."/>
-        <button id="proxi-send">Verstuur</button>
       </div>
     </div>`;
   document.body.appendChild(root);
@@ -137,73 +202,126 @@
   const $text = document.getElementById("proxi-text");
   const $send = document.getElementById("proxi-send");
 
-  function initWelcome(){ addMsg(WELCOME,"bot"); }
-  function addMsg(text, who){
+  // -------------------------------------
+  // UI helpers
+  // -------------------------------------
+  function initWelcome() { addMsg(WELCOME, "bot"); }
+
+  function addMsg(text, who) {
     const div = document.createElement("div");
     div.className = "msg " + (who || "bot");
     div.innerHTML = text;
     $msgs.appendChild(div);
     $msgs.scrollTop = $msgs.scrollHeight;
   }
-  function addChips(items){
+
+  function addChips(items) {
     const wrap = document.createElement("div");
     wrap.className = "row";
-    items.forEach(t=>{
+    items.forEach(t => {
       const b = document.createElement("button");
       b.className = "chip";
       b.textContent = t.label;
-      b.onclick = ()=>send(t.payload);
+      b.onclick = () => send(t.payload);
       wrap.appendChild(b);
     });
     $msgs.appendChild(wrap);
     $msgs.scrollTop = $msgs.scrollHeight;
   }
 
-  async function send(text){
-    if(!text) return;
+  // -------------------------------------
+  // Send logic
+  // -------------------------------------
+  async function send(text) {
+    if (!text) return;
     popup.style.display = "none";
-    addMsg(text,"user");
+    addMsg(text, "user");
     $text.value = "";
-    try{
+    try {
       const res = await fetch(`${DEFAULT_API}/chat`, {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({ message:text, bot_id:BOT_ID, session_id:sid() })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text, bot_id: BOT_ID, session_id: sid() }),
       });
       const data = await res.json();
-      addMsg(data.reply || "...","bot");
-      if(Array.isArray(data.suggestions)){
-        addChips(data.suggestions.map(x=>({label:x, payload:x})));
+      addMsg(data.reply || "...", "bot");
+      if (Array.isArray(data.suggestions)) {
+        addChips(data.suggestions.map(x => ({ label: x, payload: x })));
       }
-    }catch(e){
-      addMsg("⚠️ De server reageert niet. Controleer of de backend draait op poort 5050.","bot");
+    } catch (e) {
+      addMsg("⚠️ De server reageert niet. Controleer of de backend draait op poort 5050.", "bot");
     }
   }
 
-  setTimeout(()=> popup.style.display = "block", 2000);
+  // -------------------------------------
+  // Open/Close + body scroll lock
+  // -------------------------------------
+  setTimeout(() => (popup.style.display = "block"), 2000);
 
   let chatVisible = false;
-  btn.onclick = ()=>{
-    popup.style.display = "none";
-    chatVisible = !chatVisible;
-    root.style.display = chatVisible ? "block" : "none";
-    if(chatVisible && !$msgs.hasChildNodes()) initWelcome();
-  };
-  popup.onclick = ()=>{
+  function openChat() {
     popup.style.display = "none";
     root.style.display = "block";
+    btn.style.display = "none";      // launcher niet door de knop heen
+    document.documentElement.style.overflow = "hidden"; // pagina niet scrollen
     chatVisible = true;
-    if(!$msgs.hasChildNodes()) initWelcome();
-  };
+    if (!$msgs.hasChildNodes()) initWelcome();
+  }
+  function closeChat() {
+    root.style.display = "none";
+    btn.style.display = "flex";
+    document.documentElement.style.overflow = ""; // herstel
+    chatVisible = false;
+    // reset eventuele viewport lift
+    root.style.transform = "translateY(0)";
+  }
 
-  $send.onclick = ()=>send($text.value.trim());
-  $text.addEventListener("keydown", e=>{
-    if(e.key==="Enter") send($text.value.trim());
+  btn.onclick = () => (chatVisible ? closeChat() : openChat());
+  popup.onclick = openChat;
+
+  // -------------------------------------
+  // Actions bar (mail/call/whatsapp)
+  // -------------------------------------
+  const toolMail = document.getElementById("proxi-tool-mail");
+  const toolCall = document.getElementById("proxi-tool-call");
+  const toolWa   = document.getElementById("proxi-tool-wa");
+  const toolChat = document.getElementById("proxi-tool-chat");
+
+  toolChat.onclick = () => $text.focus();
+  toolMail.onclick = () => window.open("mailto:info@chatpro-ai.nl", "_blank");
+  toolCall.onclick = () => window.open("tel:+31850608199", "_self");
+  toolWa.onclick   = () => window.open("https://wa.me/31850608199", "_blank");
+
+  // -------------------------------------
+  // Input handlers
+  // -------------------------------------
+  $send.onclick = () => send($text.value.trim());
+  $text.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      send($text.value.trim());
+    }
   });
 
-  // 📱 Fix voor mobiel toetsenbord (iOS & Android)
-  window.visualViewport?.addEventListener("resize", ()=>{
-    const vh = window.visualViewport.height;
-    root.style.bottom = `${window.innerHeight - vh}px`;
+  // -------------------------------------
+  // 📱 Mobiel: til chat boven toetsenbord met VisualViewport API
+  // (iOS/Android, zonder lelijke zoom/verschuiving)
+  // -------------------------------------
+  const vv = window.visualViewport;
+  function liftWithKeyboard() {
+    if (!vv) return;
+    // hoeveelheid die het toetsenbord in beeld inneemt
+    const keyboard = (window.innerHeight - (vv.height + vv.offsetTop));
+    // alleen op mobiel (kleine viewports) liften
+    if (keyboard > 0 && window.innerWidth <= 600 && chatVisible) {
+      root.style.transform = `translateY(-${keyboard}px)`;
+    } else {
+      root.style.transform = "translateY(0)";
+    }
+  }
+  vv && vv.addEventListener("resize", liftWithKeyboard);
+  vv && vv.addEventListener("scroll", liftWithKeyboard);
+  window.addEventListener("orientationchange", () => {
+    setTimeout(liftWithKeyboard, 250);
   });
 })();
