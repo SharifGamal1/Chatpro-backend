@@ -38,7 +38,10 @@
   // CSS
   // -------------------------------------
   const css = `
-    :root { --proxi-safe: env(safe-area-inset-bottom); }
+    :root {
+      --proxi-safe: env(safe-area-inset-bottom);
+      --vh: 100%; /* fallback */
+    }
 
     #proxi-button {
       position: fixed; bottom: 25px; right: 35px;
@@ -142,14 +145,31 @@
     #proxi-foot a { color: #6b7280; text-decoration: none; font-weight: 500; }
     #proxi-foot a:hover { text-decoration: underline; }
 
+    /* ✅ Mobile fix: echte hoogte gebruiken i.p.v. 100vh */
     @media (max-width: 600px) {
-      #proxi-root { right: 0; bottom: 0; width: 100vw; height: 100vh; border-radius: 0; transform: translateY(0); }
+      #proxi-root {
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        height: calc(var(--vh, 1vh) * 100);
+        border-radius: 0;
+        transform: translateY(0);
+      }
       #proxi-box { border-radius: 0; }
     }
   `;
   const style = document.createElement("style");
   style.textContent = css;
   document.head.appendChild(style);
+
+  // ✅ Dynamische hoogte fix voor iOS Safari
+  function fixMobileHeight() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  }
+  fixMobileHeight();
+  window.addEventListener("resize", fixMobileHeight);
+  window.addEventListener("orientationchange", fixMobileHeight);
 
   // -------------------------------------
   // Elements
