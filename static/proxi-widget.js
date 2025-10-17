@@ -1,4 +1,4 @@
-(function () {
+(function () { 
   // 🔗 Backend & assets
   const DEFAULT_API = "https://chatpro-backend-wu17.onrender.com";
   const BOT_ID = "chatpro_site";
@@ -40,26 +40,43 @@
   const css = `
     :root {
       --proxi-safe: env(safe-area-inset-bottom);
-      --vh: 100%; /* fallback */
+      --vh: 100%;
     }
 
+    /* 💬 Widget button + online status */
     #proxi-button {
       position: fixed; bottom: 25px; right: 35px;
-      width: 60px; height: 60px; border-radius: 50%;
+      width: 62px; height: 62px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 99999; background: transparent;
-      box-shadow: 0 0 15px rgba(139,92,246,.6), 0 0 25px rgba(14,165,233,.4);
-      animation: glowPulse 2.5s infinite alternate;
+      cursor: pointer; z-index: 99999;
+      background: #8b5cf6;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+      transition: all .25s ease;
+      animation: glowPulse 3s infinite alternate;
     }
+    #proxi-button:hover { transform: scale(1.05); }
     @keyframes glowPulse {
-      0% { box-shadow: 0 0 12px rgba(139,92,246,.6), 0 0 25px rgba(14,165,233,.3); }
-      100% { box-shadow: 0 0 18px rgba(139,92,246,.8), 0 0 30px rgba(14,165,233,.5); }
+      0% { box-shadow: 0 0 10px rgba(139,92,246,.6), 0 0 18px rgba(14,165,233,.4); }
+      100% { box-shadow: 0 0 14px rgba(139,92,246,.8), 0 0 25px rgba(14,165,233,.6); }
     }
-    #proxi-button img { width: 60px; height: 60px; border-radius: 50%; transition: transform .2s; }
-    #proxi-button img:hover { transform: scale(1.05); }
+    #proxi-button img { width: 60px; height: 60px; border-radius: 50%; }
 
+    /* ✅ Online indicator */
+    #proxi-status-dot {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      width: 13px;
+      height: 13px;
+      background: #22c55e;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 6px rgba(34,197,94,0.8);
+    }
+
+    /* 💬 Popup welcome */
     #proxi-popup {
-      position: fixed; bottom: 95px; right: 25px; background: #fff;
+      position: fixed; bottom: 95px; right: 35px; background: #fff;
       border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,.2);
       padding: 12px 15px; font-family: Inter,system-ui,sans-serif;
       color: #111; max-width: 260px; font-size: 14px; display: none; z-index: 99998;
@@ -70,23 +87,30 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* 💬 Chat window */
     #proxi-root {
-      position: fixed; right: 100px; bottom: 100px;
-      width: 330px; height: 460px; display: none;
+      position: fixed; right: 35px; bottom: 95px;
+      width: 340px; height: 470px; display: none;
       z-index: 99998; font-family: Inter,system-ui,sans-serif;
-      transition: transform .25s ease, bottom .25s ease;
-      will-change: transform;
+      opacity: 0; transform: translateY(15px);
+      transition: all .3s ease;
+    }
+    #proxi-root.open {
+      opacity: 1; transform: translateY(0);
     }
 
     #proxi-box {
       display: flex; flex-direction: column; height: 100%;
-      border-radius: 14px; box-shadow: 0 10px 25px rgba(0,0,0,.2);
+      border-radius: 16px; box-shadow: 0 10px 35px rgba(0,0,0,.25);
       background: #fff; border: 1px solid #e7e7e9; overflow: hidden;
     }
 
+    /* 💜 Header met gradient */
     #proxi-head {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 14px; background: #8b5cf6; color: #fff;
+      padding: 10px 14px;
+      background: linear-gradient(135deg,#8b5cf6 0%,#6366f1 100%);
+      color: #fff;
     }
     #proxi-head .left { display: flex; align-items: center; gap: 8px; }
     #proxi-head .face { display: flex; align-items: center; gap: 6px; }
@@ -145,15 +169,12 @@
     #proxi-foot a { color: #6b7280; text-decoration: none; font-weight: 500; }
     #proxi-foot a:hover { text-decoration: underline; }
 
-    /* ✅ Mobile fix: echte hoogte gebruiken i.p.v. 100vh */
+    /* 📱 Mobile fix */
     @media (max-width: 600px) {
       #proxi-root {
-        right: 0;
-        bottom: 0;
-        width: 100vw;
+        right: 0; bottom: 0; width: 100vw;
         height: calc(var(--vh, 1vh) * 100);
-        border-radius: 0;
-        transform: translateY(0);
+        border-radius: 0; transform: translateY(0);
       }
       #proxi-box { border-radius: 0; }
     }
@@ -162,7 +183,7 @@
   style.textContent = css;
   document.head.appendChild(style);
 
-  // ✅ Dynamische hoogte fix voor iOS Safari
+  // ✅ Dynamische hoogte fix
   function fixMobileHeight() {
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
@@ -176,7 +197,10 @@
   // -------------------------------------
   const btn = document.createElement("div");
   btn.id = "proxi-button";
-  btn.innerHTML = `<img src="${ICON_URL}" alt="Proxi"/>`;
+  btn.innerHTML = `
+    <img src="${ICON_URL}" alt="Proxi"/>
+    <div id="proxi-status-dot"></div>
+  `;
   document.body.appendChild(btn);
 
   const popup = document.createElement("div");
@@ -265,13 +289,15 @@
   function openChat() {
     popup.style.display = "none";
     root.style.display = "block";
+    requestAnimationFrame(() => root.classList.add("open"));
     chatVisible = true;
     if (isMobile()) btn.style.display = "none";
     if (!$msgs.hasChildNodes()) initWelcome();
   }
 
   function closeChat() {
-    root.style.display = "none";
+    root.classList.remove("open");
+    setTimeout(() => (root.style.display = "none"), 250);
     chatVisible = false;
     if (isMobile()) btn.style.display = "flex";
   }
