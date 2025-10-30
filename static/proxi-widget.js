@@ -1,31 +1,44 @@
 (function () {
+/* ==========================
+   Proxi Widget — Apple Premium
+   ========================== */
+
+  // 🔗 Backend & settings
   const DEFAULT_API = "https://chatpro-backend-wu17.onrender.com";
   const BOT_ID = "chatpro_site";
+  const WELCOME =
+    "Hoi 👋 ik ben Proxi, de virtuele assistent van ChatPro-AI. Waar kan ik je vandaag mee helpen?";
+  const BRAND_FROM = "#8b5cf6";
+  const BRAND_TO = "#6366f1";
+  const SID_KEY = "proxi_session_id";
+
+  // Fonts: Plus Jakarta Sans
+  (function injectFont(){
+    if (!document.querySelector('link[href*="Plus+Jakarta+Sans"]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap";
+      document.head.appendChild(link);
+    }
+  })();
+
+  // Assets
   const STATIC_BASE = DEFAULT_API;
   const ICON_URL = `${STATIC_BASE}/static/proxi-icon.svg?v=3`;
 
-  const WELCOME1 = "Welkom bij ChatPro-AI 👋, ik ben Proxi.";
-  const WELCOME2 = "Laat me gerust weten als je ergens hulp bij nodig hebt.";
-
-  const SUGGESTIONS = [
-    "Wat kost ChatPro-AI en hoe snel ben ik live?",
-    "Kan ik een demo van de chatbot krijgen?",
-    "Hoe werkt de integratie met mijn website?",
-    "Kan ik direct contact opnemen met een expert?"
-  ];
-
+  // Avatar + dot
   const AVATAR_SVG = `
-    <svg viewBox="0 0 64 64" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg viewBox="0 0 64 64" width="22" height="22" xmlns="http://www.w3.org/2000/svg">
       <circle cx="32" cy="32" r="32" fill="#fff"/>
       <circle cx="32" cy="26" r="10" fill="#fde68a"/>
       <path d="M16 50a16 16 0 0 1 32 0" fill="#a78bfa"/>
     </svg>`;
   const DOT_SVG = `
-    <svg viewBox="0 0 10 10" width="8" height="8" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg viewBox="0 0 10 10" width="8" height="8" xmlns="http://www.w3.org/2000/svg">
       <circle cx="5" cy="5" r="5" fill="#22c55e"/>
     </svg>`;
 
-  const SID_KEY = "proxi_session_id";
+  // Session
   function sid() {
     let id = localStorage.getItem(SID_KEY);
     if (!id) {
@@ -35,138 +48,133 @@
     return id;
   }
 
-  // ───────────────────────────────────────────────
-  // CSS-injectie (Apple frosted glass + mobiel fix)
-  // ───────────────────────────────────────────────
+  // CSS
   const css = `
-  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
-  :root {
-    --vh: 100%;
-    --accent1: #8b5cf6;
-    --accent2: #6366f1;
-    --bg-glass: rgba(255,255,255,0.75);
-    --border-glass: rgba(255,255,255,0.5);
-    --shadow: 0 18px 45px rgba(0,0,0,.22);
-    --radius: 18px;
-    --msg-radius: 14px;
-    --safe: env(safe-area-inset-bottom);
-  }
-  * { box-sizing: border-box; }
-  body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    :root {
+      --proxi-safe: env(safe-area-inset-bottom);
+      --vh: 100%;
+      --brand-from: ${BRAND_FROM};
+      --brand-to: ${BRAND_TO};
+      --fg: rgba(255,255,255,0.75);
+      --fg-body: rgba(255,255,255,0.6);
+      --fg-border: rgba(255,255,255,0.35);
+      --shadow: 0 15px 45px rgba(0,0,0,0.18);
+      --text: #0f172a;
+      --chip-bg: rgba(99,102,241,0.08);
+      --chip-brd: rgba(99,102,241,0.25);
+      --user: #7c6bf8;
+      --user2: #6f72ff;
+      --timestamp: #9aa4b2;
+    }
 
-  /* Widget knop */
-  #proxi-button {
-    position: fixed; right: 30px; bottom: 25px;
-    width: 64px; height: 64px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 8px 22px rgba(0,0,0,.2);
-    cursor: pointer; z-index: 99999;
-  }
-  #proxi-button img { width: 60%; height: 60%; }
-  #proxi-status-dot {
-    position: absolute; right: 6px; bottom: 6px;
-    width: 13px; height: 13px; border-radius: 50%;
-    background: #22c55e; border: 2px solid #fff;
-  }
+    * { box-sizing: border-box; }
+    #proxi-root, #proxi-button, #proxi-popup { font-family: "Plus Jakarta Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
 
-  /* Welkomst-popup */
-  #proxi-popup {
-    position: fixed; right: 30px; bottom: 100px;
-    z-index: 99998; display: none;
-    background: #fff; border-radius: 14px;
-    padding: 12px 14px; font-size: 13px; color: #111;
-    box-shadow: 0 8px 25px rgba(0,0,0,.15);
-    max-width: 260px; line-height: 1.45;
-    animation: fadeIn .4s ease;
-  }
+    /* ✨ Widget button */
+    #proxi-button {
+      position: fixed; bottom: 24px; right: 28px;
+      width: 64px; height: 64px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 999999;
+      background: radial-gradient(120% 120% at 30% 30%, var(--brand-from), var(--brand-to));
+      box-shadow: 0 10px 24px rgba(99,102,241,0.38);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    #proxi-button:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 14px 34px rgba(99,102,241,0.42); }
+    #proxi-button img { width: 64px; height: 64px; border-radius: 50%; }
+    #proxi-status-dot {
+      position: absolute; bottom: 6px; right: 6px; width: 13px; height: 13px;
+      background: #22c55e; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 8px rgba(34,197,94,0.7);
+    }
 
-  /* Chatvenster */
-  #proxi-root {
-    position: fixed; right: 30px; bottom: 95px;
-    width: 360px; height: 520px; display: none;
-    opacity: 0; transform: translateY(14px);
-    transition: all .3s ease; z-index: 99998;
-  }
-  #proxi-root.open { opacity: 1; transform: translateY(0); }
+    /* 💬 Welcome balloon */
+    #proxi-popup {
+      position: fixed; bottom: 100px; right: 28px; max-width: 280px;
+      padding: 12px 14px; border-radius: 14px;
+      color: #0f172a; backdrop-filter: blur(14px);
+      background: var(--fg); border: 1px solid var(--fg-border);
+      box-shadow: var(--shadow);
+      display: none; z-index: 999998; font-size: 13px; line-height: 1.35;
+      animation: proxiFadeIn .35s ease;
+    }
+    @keyframes proxiFadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
 
-  #proxi-box {
-    display: flex; flex-direction: column; height: 100%;
-    background: var(--bg-glass);
-    backdrop-filter: saturate(120%) blur(24px);
-    border: 1px solid var(--border-glass);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
+    /* 🪟 Chat window */
+    #proxi-root {
+      position: fixed; right: 28px; bottom: 100px; width: 360px; height: 520px;
+      display: none; z-index: 999998; opacity: 0; transform: translateY(14px);
+      transition: opacity .28s ease, transform .28s ease;
+    }
+    #proxi-root.open { opacity: 1; transform: translateY(0); }
+    #proxi-box {
+      display: flex; flex-direction: column; height: 100%; overflow: hidden;
+      border-radius: 18px; box-shadow: var(--shadow);
+      background: var(--fg-body); border: 1px solid var(--fg-border);
+      backdrop-filter: blur(22px) saturate(1.15);
+      -webkit-backdrop-filter: blur(22px) saturate(1.15);
+    }
 
-  #proxi-head {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,.05);
-    background: linear-gradient(135deg, rgba(139,92,246,.15), rgba(99,102,241,.10));
-  }
-  #proxi-head .left { display: flex; align-items: center; gap: 8px; }
-  #proxi-head .title { font-weight: 600; font-size: 15px; }
-  #proxi-close { background: none; border: none; font-size: 22px; color: #555; cursor: pointer; display: none; }
+    /* 🧊 Header */
+    #proxi-head {
+      position: relative;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; color: #0f172a;
+      background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.55));
+      border-bottom: 1px solid var(--fg-border);
+    }
+    #proxi-head .left { display: flex; align-items: center; gap: 10px; }
+    #proxi-head .face { display: flex; align-items: center; gap: 6px; }
+    #proxi-head .title { font-weight: 700; font-size: 14px; letter-spacing: .2px; }
+    #proxi-close { background: transparent; border: none; font-size: 20px; line-height: 1; cursor: pointer; color: #0f172a; }
+    @media (min-width: 601px) { #proxi-close { display: none; } } /* desktop verbergen */
 
-  #proxi-messages {
-    flex: 1; padding: 12px; overflow-y: auto;
-  }
-  .msg {
-    max-width: 82%; margin: 6px 0; padding: 10px 12px;
-    border-radius: var(--msg-radius);
-    background: #fff; color: #111;
-    border: 1px solid rgba(0,0,0,.05);
-    font-size: 13.5px;
-    animation: fadeIn .3s ease forwards; opacity: 0;
-  }
-  .msg.user {
-    margin-left: auto;
-    background: linear-gradient(135deg, rgba(139,92,246,.9), rgba(99,102,241,.9));
-    color: #fff; border: none;
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    /* 📜 Messages */
+    #proxi-messages { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; padding: 12px 12px 6px 12px; }
+    .msg { max-width: 82%; padding: 9px 12px; border-radius: 14px; margin: 6px 0; font-size: 14px; line-height: 1.45; color: var(--text); }
+    .msg a { color: #2563eb; text-decoration: underline; word-break: break-word; }
+    .bot { background: rgba(255,255,255,0.85); border: 1px solid var(--fg-border); }
+    .user { margin-left: auto; background: linear-gradient(135deg, var(--user), var(--user2)); color: #fff; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 6px 18px rgba(111,114,255,0.18); }
+    .timestamp { display: block; font-size: 10.5px; color: var(--timestamp); margin-top: 3px; text-align: right; }
 
-  .time { font-size: 11px; color: #999; text-align: right; margin-top: 2px; }
+    /* ⌨️ Input */
+    #proxi-input { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.9); border-top: 1px solid var(--fg-border); padding: 8px 10px calc(10px + var(--proxi-safe)); position: sticky; bottom: 0; backdrop-filter: blur(16px); }
+    #proxi-text { flex: 1; border: 1px solid rgba(15,23,42,0.08); padding: 11px 12px; border-radius: 12px; outline: none; font-size: 14px; background: rgba(255,255,255,0.9); }
+    #proxi-send { border: none; cursor: pointer; font-weight: 700; border-radius: 12px; padding: 11px 14px; color: #fff; background: linear-gradient(135deg, var(--brand-from), var(--brand-to)); box-shadow: 0 8px 16px rgba(99,102,241,0.25); }
 
-  /* Chips */
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
-  .chip {
-    font-size: 12.5px; padding: 7px 11px; border-radius: 999px;
-    background: linear-gradient(135deg, rgba(139,92,246,.1), rgba(99,102,241,.08));
-    border: 1px solid rgba(99,102,241,.25); color: #333;
-    cursor: pointer; transition: all .12s ease;
-  }
-  .chip:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(99,102,241,.15); }
+    /* 🔹 Chips */
+    #proxi-chips { margin-top: 2px; }
+    .chip { display: inline-block; margin: 4px 6px 0 0; padding: 7px 12px; font-size: 12.5px; border-radius: 999px; cursor: pointer; background: var(--chip-bg); border: 1px solid var(--chip-brd); color: #424b9b; transition: transform .15s ease, background .15s ease; user-select: none; }
+    .chip:hover { transform: translateY(-1px); }
 
-  /* Typing indicator */
-  .typing { display: inline-flex; gap: 4px; padding: 8px; }
-  .typing span { width: 6px; height: 6px; border-radius: 50%; background: #9ca3af; animation: blink 1.2s infinite both; }
-  .typing span:nth-child(2) { animation-delay: .15s; } .typing span:nth-child(3) { animation-delay: .3s; }
-  @keyframes blink { 0%,80%,100% { opacity: .3; transform: scale(1); } 40% { opacity: 1; transform: scale(1.2); } }
+    /* Typing indicator */
+    .typing { display: inline-flex; align-items: center; gap: 4px; padding: 9px 12px; background: rgba(255,255,255,0.85); border: 1px solid var(--fg-border); border-radius: 14px; }
+    .dot { width: 6px; height: 6px; background: #94a3b8; border-radius: 50%; animation: pulse 1s infinite ease-in-out; }
+    .dot:nth-child(2){ animation-delay: .15s; } .dot:nth-child(3){ animation-delay: .30s; }
+    @keyframes pulse { 0%, 80%, 100% { opacity: .2; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-2px); } }
 
-  /* Input */
-  #proxi-input { display: flex; gap: 8px; padding: 10px 12px calc(10px + var(--safe)); background: rgba(255,255,255,.8); border-top: 1px solid rgba(0,0,0,.05); }
-  #proxi-text { flex: 1; border: 1px solid rgba(0,0,0,.08); border-radius: 12px; padding: 10px 12px; }
-  #proxi-send { width: 38px; height: 38px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--accent1), var(--accent2)); color: #fff; font-size: 16px; }
-
-  #proxi-foot { text-align: center; padding: 6px; font-size: 12px; color: #9aa0a6; }
-  #proxi-foot a { color: var(--accent2); text-decoration: none; }
-
-  /* Mobile fullscreen */
-  @media (max-width: 600px) {
-    #proxi-root { right: 0; bottom: 0; width: 100vw; height: calc(var(--vh, 1vh) * 100); }
-    #proxi-box { border-radius: 0; }
-    #proxi-close { display: block; }
-  }`;
-
+    /* 📱 Mobile full-screen + keyboard safe */
+    @media (max-width: 600px) {
+      #proxi-root { right: 0; bottom: 0; width: 100vw; height: calc(var(--vh, 1vh) * 100); }
+      #proxi-box { border-radius: 0; }
+      #proxi-button.nudging { animation: nudge 1s ease-in-out infinite; }
+    }
+    /* Nudge */
+    @keyframes nudge { 0% { transform: translate(0,0); } 20% { transform: translate(-2px,0); } 40% { transform: translate(2px,0); } 60% { transform: translate(-2px,0); } 80% { transform: translate(2px,0); } 100% { transform: translate(0,0); } }
+  `;
   const style = document.createElement("style");
   style.textContent = css;
   document.head.appendChild(style);
 
-  // ───────────────────────────────────────────────
-  // ELEMENTEN BOUWEN
-  // ───────────────────────────────────────────────
+  // 100vh fix for iOS
+  function fixMobileHeight() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+  }
+  fixMobileHeight();
+  window.addEventListener("resize", fixMobileHeight);
+  window.addEventListener("orientationchange", () => setTimeout(fixMobileHeight, 250));
+
+  // Elements
   const btn = document.createElement("div");
   btn.id = "proxi-button";
   btn.innerHTML = `<img src="${ICON_URL}" alt="Proxi"/><div id="proxi-status-dot"></div>`;
@@ -174,7 +182,7 @@
 
   const popup = document.createElement("div");
   popup.id = "proxi-popup";
-  popup.innerHTML = `${WELCOME1}<br>${WELCOME2}`;
+  popup.textContent = WELCOME;
   document.body.appendChild(popup);
 
   const root = document.createElement("div");
@@ -186,103 +194,102 @@
           <div class="face">${AVATAR_SVG}<span class="dot">${DOT_SVG}</span></div>
           <div class="title">Proxi</div>
         </div>
-        <button id="proxi-close">×</button>
+        <button id="proxi-close" title="Sluiten">×</button>
       </div>
       <div id="proxi-messages"></div>
+      <div id="proxi-chips"></div>
       <div id="proxi-input">
-        <input id="proxi-text" type="text" placeholder="Typ hier..." autocomplete="off"/>
-        <button id="proxi-send">→</button>
+        <input id="proxi-text" type="text" placeholder="Typ hier..."/>
+        <button id="proxi-send">Verstuur</button>
       </div>
-      <div id="proxi-foot">Gebouwd door <a href="https://www.chatpro-ai.nl" target="_blank">ChatPro-AI</a></div>
     </div>`;
   document.body.appendChild(root);
 
-  // ───────────────────────────────────────────────
-  // FUNCTIONALITEIT
-  // ───────────────────────────────────────────────
-  const $msgs = document.getElementById("proxi-messages");
-  const $text = document.getElementById("proxi-text");
-  const $send = document.getElementById("proxi-send");
+  const $msgs  = document.getElementById("proxi-messages");
+  const $chips = document.getElementById("proxi-chips");
+  const $text  = document.getElementById("proxi-text");
+  const $send  = document.getElementById("proxi-send");
   const $close = document.getElementById("proxi-close");
 
-  const isMobile = () => window.innerWidth <= 600;
-  const nowTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-  function addMsg(text, who) {
+  // Helpers
+  function nowTime() {
+    const d = new Date();
+    const h = String(d.getHours()).padStart(2,"0");
+    const m = String(d.getMinutes()).padStart(2,"0");
+    return `${h}:${m}`;
+  }
+  function addMsg(text, who="bot") {
     const wrap = document.createElement("div");
-    wrap.className = "msg " + (who || "bot");
-    wrap.innerHTML = text;
-    const t = document.createElement("div");
-    t.className = "time";
-    t.textContent = nowTime();
-    const c = document.createElement("div");
-    c.appendChild(wrap);
-    c.appendChild(t);
-    $msgs.appendChild(c);
-    $msgs.scrollTop = $msgs.scrollHeight;
-  }
-
-  function showTyping() {
-    const el = document.createElement("div");
-    el.className = "typing";
-    el.id = "proxi-typing";
-    el.innerHTML = "<span></span><span></span><span></span>";
-    $msgs.appendChild(el);
-    $msgs.scrollTop = $msgs.scrollHeight;
-  }
-  function hideTyping() {
-    const el = document.getElementById("proxi-typing");
-    if (el) el.remove();
-  }
-
-  function showChips(arr) {
-    const wrap = document.createElement("div");
-    wrap.className = "chips";
-    wrap.id = "proxi-chips";
-    arr.forEach(q => {
-      const c = document.createElement("span");
-      c.className = "chip";
-      c.textContent = q;
-      c.onclick = () => { removeChips(); send(q); };
-      wrap.appendChild(c);
-    });
+    wrap.className = "msg " + who;
+    wrap.innerHTML = `${text}<span class="timestamp">${nowTime()}</span>`;
     $msgs.appendChild(wrap);
     $msgs.scrollTop = $msgs.scrollHeight;
   }
-
-  function removeChips() {
-    const el = document.getElementById("proxi-chips");
-    if (el) el.remove();
+  function clearChips() { $chips.innerHTML = ""; }
+  function addChips(items) {
+    clearChips();
+    items.forEach(x => {
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.textContent = x;
+      chip.onclick = () => { send(x); clearChips(); };
+      $chips.appendChild(chip);
+    });
+    $msgs.scrollTop = $msgs.scrollHeight;
   }
 
+  // Typing indicator
+  let typingEl = null;
+  function showTyping() {
+    if (typingEl) return;
+    typingEl = document.createElement("div");
+    typingEl.className = "typing bot";
+    typingEl.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
+    const row = document.createElement("div");
+    row.className = "msg bot";
+    row.style.background = "transparent";
+    row.style.border = "none";
+    row.appendChild(typingEl);
+    $msgs.appendChild(row);
+    $msgs.scrollTop = $msgs.scrollHeight;
+  }
+  function hideTyping() {
+    if (!typingEl) return;
+    typingEl.parentElement?.parentElement?.remove();
+    typingEl = null;
+  }
+
+  // Fetch send
   async function send(text) {
     if (!text) return;
     popup.style.display = "none";
-    removeChips();
-    addMsg(text, "user");
+    clearChips();
+    addMsg(escapeHtml(text), "user");
     $text.value = "";
+
     showTyping();
     try {
       const res = await fetch(`${DEFAULT_API}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, bot_id: BOT_ID, session_id: sid() })
+        body: JSON.stringify({ message: text, bot_id: BOT_ID, session_id: sid() }),
       });
       const data = await res.json();
       hideTyping();
-      addMsg(data.reply || "…", "bot");
-      if (Array.isArray(data.suggestions)) showChips(data.suggestions.slice(0, 4));
-    } catch {
+      addMsg(data.reply || "...", "bot");
+      if (Array.isArray(data.suggestions) && data.suggestions.length) addChips(data.suggestions);
+    } catch (e) {
       hideTyping();
       addMsg("⚠️ De server reageert niet.", "bot");
     }
   }
 
-  $send.onclick = () => send($text.value.trim());
-  $text.addEventListener("keydown", e => { if (e.key === "Enter") send($text.value.trim()); });
-  $text.addEventListener("input", removeChips);
+  function escapeHtml(s){ return s.replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m])); }
 
+  // Open / close
   let chatVisible = false;
+  const isMobile = () => window.innerWidth <= 600;
+
   function openChat() {
     popup.style.display = "none";
     root.style.display = "block";
@@ -290,15 +297,14 @@
     chatVisible = true;
     if (isMobile()) btn.style.display = "none";
     if (!$msgs.hasChildNodes()) {
-      addMsg(WELCOME1, "bot");
-      addMsg(WELCOME2, "bot");
-      showChips(SUGGESTIONS);
+      addMsg(WELCOME, "bot");
     }
+    resetIdle();
+    setTimeout(()=> $text.focus(), 50);
   }
-
   function closeChat() {
     root.classList.remove("open");
-    setTimeout(() => root.style.display = "none", 220);
+    setTimeout(() => (root.style.display = "none"), 240);
     chatVisible = false;
     if (isMobile()) btn.style.display = "flex";
   }
@@ -307,23 +313,44 @@
   popup.onclick = openChat;
   $close.onclick = closeChat;
 
-  // Welkomst-popup na 2s
-  setTimeout(() => { popup.style.display = "block"; }, 2000);
+  // Input events
+  $send.onclick = () => send($text.value.trim());
+  $text.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); send($text.value.trim()); }
+    if ($chips.childElementCount) clearChips();
+    resetIdle();
+  });
 
-  // Nudge animatie
-  setTimeout(() => {
-    btn.style.animation = "nudge 1s ease";
-    setTimeout(() => btn.style.animation = "", 1200);
-  }, 45000);
-
-  // iOS keyboard fix
+  // iOS keyboard lift with visualViewport
   const vv = window.visualViewport;
-  function adjustForKeyboard() {
+  function liftWithKeyboard() {
     if (!vv) return;
-    const kb = window.innerHeight - (vv.height + vv.offsetTop);
-    if (kb > 0 && isMobile() && chatVisible)
-      root.style.transform = `translateY(-${kb}px)`;
-    else root.style.transform = "";
+    const keyboard = (window.innerHeight - (vv.height + vv.offsetTop));
+    if (keyboard > 0 && isMobile() && chatVisible) {
+      root.style.transform = `translateY(-${keyboard}px)`;
+    } else {
+      root.style.transform = "translateY(0)";
+    }
   }
-  vv && vv.addEventListener("resize", adjustForKeyboard);
+  vv && vv.addEventListener("resize", liftWithKeyboard);
+  vv && vv.addEventListener("scroll", liftWithKeyboard);
+  window.addEventListener("orientationchange", () => setTimeout(liftWithKeyboard, 250));
+
+  // Welcome popup (2s)
+  setTimeout(() => (popup.style.display = "block"), 2000);
+
+  // Nudge after 45s idle
+  let idleTimer = null;
+  function resetIdle(){
+    if (idleTimer) clearTimeout(idleTimer);
+    btn.classList.remove("nudging");
+    idleTimer = setTimeout(()=>{
+      if (!chatVisible) btn.classList.add("nudging");
+    }, 45000);
+  }
+  ["click","keydown","mousemove","touchstart"].forEach(evt => {
+    window.addEventListener(evt, resetIdle, { passive: true });
+  });
+  resetIdle();
+
 })();
