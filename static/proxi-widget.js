@@ -6,7 +6,6 @@
   const STATIC_BASE = DEFAULT_API;
   const ICON_URL = `${STATIC_BASE}/static/proxi-icon.svg?v=3`;
 
-  // Session ID
   function sid() {
     let id = localStorage.getItem(SID_KEY);
     if (!id) {
@@ -16,7 +15,6 @@
     return id;
   }
 
-  // Styles (Apple-style)
   const css = `
     :root {
       --brand: #8b5cf6;
@@ -27,17 +25,15 @@
       --safe: env(safe-area-inset-bottom);
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; font-family: "Plus Jakarta Sans", -apple-system, system-ui, sans-serif; }
 
     #proxi-button {
       position: fixed; bottom: 25px; right: 30px;
-      width: 56px; height: 56px;
-      border-radius: 50%;
+      width: 56px; height: 56px; border-radius: 50%;
       background: linear-gradient(135deg,var(--brand),var(--brand2));
       box-shadow: 0 8px 20px rgba(99,102,241,.4);
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 99999;
-      transition: transform .2s ease;
+      cursor: pointer; z-index: 99999; transition: transform .2s ease;
     }
     #proxi-button:hover { transform: scale(1.06); }
     #proxi-button img { width: 56px; height: 56px; border-radius: 50%; }
@@ -53,26 +49,29 @@
       position: fixed; bottom: 95px; right: 30px;
       background: rgba(255,255,255,0.85);
       backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
       border: 1px solid var(--border);
       box-shadow: 0 10px 30px rgba(0,0,0,.15);
-      padding: 12px 15px; border-radius: 14px;
-      color: var(--text); font-family: "Plus Jakarta Sans", sans-serif;
-      max-width: 260px; font-size: 14px;
-      display: none; z-index: 99998;
-      animation: fadeIn .4s ease;
+      padding: 10px 14px 12px; border-radius: 14px;
+      color: var(--text); font-size: 13.5px; max-width: 260px;
+      display: none; z-index: 99998; animation: fadeIn .4s ease;
+      position: fixed;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    #proxi-popup .head {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:6px;
     }
+    #proxi-popup .name { font-weight:600; font-size:13px; color:#111; }
+    #proxi-popup .close {
+      border:none; background:none; font-size:16px;
+      line-height:1; cursor:pointer; color:#555;
+    }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
 
     #proxi-root {
       position: fixed; right: 30px; bottom: 95px;
       width: 340px; height: 470px;
       display: none; opacity: 0; transform: translateY(10px);
       z-index: 99998; transition: all .25s ease;
-      font-family: "Plus Jakarta Sans", sans-serif;
     }
     #proxi-root.open { opacity: 1; transform: translateY(0); }
 
@@ -82,21 +81,18 @@
       border: 1px solid var(--border);
       border-radius: 18px;
       backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
       box-shadow: 0 10px 30px rgba(0,0,0,.2);
       overflow: hidden;
     }
 
     #proxi-head {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 14px;
-      background: rgba(255,255,255,0.35);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      padding: 10px 14px; background: rgba(255,255,255,0.35);
       border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(16px);
     }
     #proxi-head .left { display: flex; align-items: center; gap: 8px; }
-    #proxi-head .title { font-weight: 600; font-size: 14px; color: #111; }
+    #proxi-head .title { font-weight: 600; font-size: 13.5px; color: #111; }
     #proxi-close {
       background: transparent; border: none; font-size: 20px;
       color: #444; cursor: pointer; display: none;
@@ -108,18 +104,11 @@
       -webkit-overflow-scrolling:touch;
     }
     .msg {
-      max-width:82%; padding:9px 12px; border-radius:12px;
-      margin:6px 0; font-size:14px; line-height:1.45;
+      max-width:82%; padding:8px 11px; border-radius:12px;
+      margin:6px 0; font-size:13.5px; line-height:1.45;
     }
-    .bot {
-      background: rgba(255,255,255,0.7);
-      border: 1px solid var(--border);
-      color: #111;
-    }
-    .user {
-      background: linear-gradient(135deg,var(--brand),var(--brand2));
-      color:#fff; margin-left:auto;
-    }
+    .bot { background: rgba(255,255,255,0.7); border: 1px solid var(--border); color: #111; }
+    .user { background: linear-gradient(135deg,var(--brand),var(--brand2)); color:#fff; margin-left:auto; }
 
     #proxi-input {
       display:flex; align-items:center; gap:8px;
@@ -127,30 +116,28 @@
       background: rgba(255,255,255,0.4);
       border-top: 1px solid var(--border);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       position:sticky; bottom:0;
     }
     #proxi-text {
       flex:1; border:1px solid rgba(0,0,0,0.08);
       border-radius:12px; padding:10px 12px;
       background:rgba(255,255,255,0.85);
-      font-size:14px; outline:none;
+      font-size:13.5px; outline:none;
     }
     #proxi-send {
       border:none; border-radius:12px;
       background:linear-gradient(135deg,var(--brand),var(--brand2));
       color:#fff; padding:10px 13px;
-      cursor:pointer; transition:background .2s ease;
-      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
     }
     #proxi-send svg {
-      width:16px; height:16px; fill:#fff;
+      width:15px; height:15px; fill:#fff;
       transform: rotate(-45deg);
     }
 
     #proxi-foot {
       border-top: 1px solid var(--border);
-      padding: 6px 10px; font-size: 12px;
+      padding: 6px 10px; font-size: 11.5px;
       color: rgba(31,41,55,0.6);
       text-align: center; background: rgba(255,255,255,0.4);
       backdrop-filter: blur(10px);
@@ -169,7 +156,7 @@
   style.textContent = css;
   document.head.appendChild(style);
 
-  // ✅ dynamic height fix
+  // Dynamic height fix
   function fixVH() {
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
@@ -186,7 +173,12 @@
 
   const popup = document.createElement("div");
   popup.id = "proxi-popup";
-  popup.innerText = WELCOME;
+  popup.innerHTML = `
+    <div class="head">
+      <div class="name">Proxi</div>
+      <button class="close">×</button>
+    </div>
+    <div class="body">${WELCOME}</div>`;
   document.body.appendChild(popup);
 
   const root = document.createElement("div");
@@ -194,9 +186,7 @@
   root.innerHTML = `
     <div id="proxi-box">
       <div id="proxi-head">
-        <div class="left">
-          <div class="title">Proxi</div>
-        </div>
+        <div class="left"><div class="title">Proxi</div></div>
         <button id="proxi-close">×</button>
       </div>
       <div id="proxi-messages"></div>
@@ -214,8 +204,8 @@
   const $text = document.getElementById("proxi-text");
   const $send = document.getElementById("proxi-send");
   const $close = document.getElementById("proxi-close");
+  const $popupClose = popup.querySelector(".close");
 
-  // Helpers
   function addMsg(text, who) {
     const div = document.createElement("div");
     div.className = "msg " + (who || "bot");
@@ -255,7 +245,6 @@
     if (isMobile()) btn.style.display = "none";
     if (!$msgs.hasChildNodes()) addMsg(WELCOME, "bot");
   }
-
   function closeChat() {
     root.classList.remove("open");
     setTimeout(() => (root.style.display = "none"), 240);
@@ -266,12 +255,11 @@
   btn.onclick = () => (chatVisible ? closeChat() : openChat());
   $close.onclick = closeChat;
   popup.onclick = openChat;
+  $popupClose.onclick = () => { popup.style.display = "none"; localStorage.setItem("proxi_popup_closed", "1"); };
   $send.onclick = send;
-  $text.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { e.preventDefault(); send(); }
-  });
+  $text.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); send(); } });
 
-  // Mobile keyboard lift
+  // Keyboard lift fix (iOS/Android)
   const vv = window.visualViewport;
   function lift() {
     if (!vv) return;
@@ -285,6 +273,8 @@
   vv && vv.addEventListener("scroll", lift);
   window.addEventListener("orientationchange", () => setTimeout(lift, 250));
 
-  // Welcome popup
-  setTimeout(() => (popup.style.display = "block"), 2000);
+  // Show welcome popup only if not closed before
+  if (!localStorage.getItem("proxi_popup_closed")) {
+    setTimeout(() => (popup.style.display = "block"), 2000);
+  }
 })();
