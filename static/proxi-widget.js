@@ -54,7 +54,6 @@
       padding: 10px 14px 12px; border-radius: 14px;
       color: var(--text); font-size: 13.5px; max-width: 260px;
       display: none; z-index: 99998; animation: fadeIn .4s ease;
-      position: fixed;
     }
     #proxi-popup .head {
       display:flex; align-items:center; justify-content:space-between;
@@ -102,6 +101,7 @@
     #proxi-messages {
       flex:1; padding:12px; overflow:auto;
       -webkit-overflow-scrolling:touch;
+      transition: padding-bottom .2s ease;
     }
     .msg {
       max-width:82%; padding:8px 11px; border-radius:12px;
@@ -116,7 +116,8 @@
       background: rgba(255,255,255,0.4);
       border-top: 1px solid var(--border);
       backdrop-filter: blur(12px);
-      position:sticky; bottom:0;
+      position: sticky; bottom:0;
+      transition: bottom .25s ease;
     }
     #proxi-text {
       flex:1; border:1px solid rgba(0,0,0,0.08);
@@ -156,7 +157,6 @@
   style.textContent = css;
   document.head.appendChild(style);
 
-  // Dynamic height fix
   function fixVH() {
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
@@ -205,6 +205,7 @@
   const $send = document.getElementById("proxi-send");
   const $close = document.getElementById("proxi-close");
   const $popupClose = popup.querySelector(".close");
+  const $input = document.getElementById("proxi-input");
 
   function addMsg(text, who) {
     const div = document.createElement("div");
@@ -235,7 +236,7 @@
 
   // Open / Close
   let chatVisible = false;
-  function isMobile() { return window.innerWidth <= 600; }
+  const isMobile = () => window.innerWidth <= 600;
 
   function openChat() {
     popup.style.display = "none";
@@ -259,21 +260,26 @@
   $send.onclick = send;
   $text.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); send(); } });
 
-  // Keyboard lift fix (iOS/Android)
+  // ✅ Sleak-style keyboard lift
   const vv = window.visualViewport;
   function lift() {
     if (!vv) return;
     const kb = window.innerHeight - (vv.height + vv.offsetTop);
-    if (kb > 0 && isMobile() && chatVisible)
-      root.style.transform = `translateY(-${kb}px)`;
-    else if (chatVisible)
-      root.style.transform = `translateY(0)`;
+    if (kb > 0 && isMobile() && chatVisible) {
+      $input.style.position = "fixed";
+      $input.style.bottom = `${kb}px`;
+      $msgs.style.paddingBottom = `${kb + 80}px`;
+    } else {
+      $input.style.position = "sticky";
+      $input.style.bottom = "0";
+      $msgs.style.paddingBottom = "70px";
+    }
   }
+
   vv && vv.addEventListener("resize", lift);
   vv && vv.addEventListener("scroll", lift);
   window.addEventListener("orientationchange", () => setTimeout(lift, 250));
 
-  // Show welcome popup only if not closed before
   if (!localStorage.getItem("proxi_popup_closed")) {
     setTimeout(() => (popup.style.display = "block"), 2000);
   }
