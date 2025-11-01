@@ -15,6 +15,12 @@
     return id;
   }
 
+  // ✅ voorkomt iOS zoom op invoerveld
+  const meta = document.createElement("meta");
+  meta.name = "viewport";
+  meta.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+  document.head.appendChild(meta);
+
   const css = `
     :root {
       --brand: #8b5cf6;
@@ -70,7 +76,8 @@
       position: fixed; right: 30px; bottom: 95px;
       width: 340px; height: 470px;
       display: none; opacity: 0; transform: translateY(10px);
-      z-index: 99998; transition: all .25s ease;
+      z-index: 99998; transition: transform .3s ease;
+      will-change: transform;
     }
     #proxi-root.open { opacity: 1; transform: translateY(0); }
 
@@ -205,7 +212,6 @@
   const $send = document.getElementById("proxi-send");
   const $close = document.getElementById("proxi-close");
   const $popupClose = popup.querySelector(".close");
-  const $input = document.getElementById("proxi-input");
 
   function addMsg(text, who) {
     const div = document.createElement("div");
@@ -260,24 +266,21 @@
   $send.onclick = send;
   $text.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); send(); } });
 
-  // ✅ Sleak-style keyboard lift
+  // ✅ NIEUWE keyboard fix — hele chat verschuift soepel omhoog (zoals Sleak.chat)
   const vv = window.visualViewport;
   function lift() {
-    if (!vv) return;
+    if (!vv || !chatVisible || !isMobile()) return;
     const kb = window.innerHeight - (vv.height + vv.offsetTop);
-    if (kb > 0 && isMobile() && chatVisible) {
-      $input.style.position = "fixed";
-      $input.style.bottom = `${kb}px`;
-      $msgs.style.paddingBottom = `${kb + 80}px`;
+    if (kb > 0) {
+      root.style.transform = `translateY(-${kb}px)`;
     } else {
-      $input.style.position = "sticky";
-      $input.style.bottom = "0";
-      $msgs.style.paddingBottom = "70px";
+      root.style.transform = "translateY(0)";
     }
   }
-
   vv && vv.addEventListener("resize", lift);
   vv && vv.addEventListener("scroll", lift);
+  $text.addEventListener("focus", lift);
+  $text.addEventListener("blur", () => root.style.transform = "translateY(0)");
   window.addEventListener("orientationchange", () => setTimeout(lift, 250));
 
   if (!localStorage.getItem("proxi_popup_closed")) {
