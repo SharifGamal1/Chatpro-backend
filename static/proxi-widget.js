@@ -15,7 +15,7 @@
     return id;
   }
 
-  // voorkomt iOS zoom
+  // ✅ voorkomt iOS zoom op invoerveld
   const meta = document.createElement("meta");
   meta.name = "viewport";
   meta.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
@@ -33,28 +33,26 @@
 
     * { box-sizing: border-box; font-family: "Plus Jakarta Sans", -apple-system, system-ui, sans-serif; }
 
-    /* ✅ kleinere chatknop */
     #proxi-button {
       position: fixed; bottom: 25px; right: 30px;
-      width: 48px; height: 48px; border-radius: 50%;
+      width: 56px; height: 56px; border-radius: 50%;
       background: linear-gradient(135deg,var(--brand),var(--brand2));
-      box-shadow: 0 6px 15px rgba(99,102,241,.35);
+      box-shadow: 0 8px 20px rgba(99,102,241,.4);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; z-index: 99999; transition: transform .2s ease;
     }
     #proxi-button:hover { transform: scale(1.06); }
-    #proxi-button img { width: 48px; height: 48px; border-radius: 50%; }
-
+    #proxi-button img { width: 56px; height: 56px; border-radius: 50%; }
     #proxi-status-dot {
-      position: absolute; bottom: 4px; right: 4px;
-      width: 10px; height: 10px;
+      position: absolute; bottom: 5px; right: 5px;
+      width: 11px; height: 11px;
       background: #22c55e; border-radius: 50%;
       border: 2px solid #fff;
       box-shadow: 0 0 6px rgba(34,197,94,.7);
     }
 
     #proxi-popup {
-      position: fixed; bottom: 85px; right: 30px;
+      position: fixed; bottom: 95px; right: 30px;
       background: rgba(255,255,255,0.85);
       backdrop-filter: blur(14px);
       border: 1px solid var(--border);
@@ -63,10 +61,19 @@
       color: var(--text); font-size: 13.5px; max-width: 260px;
       display: none; z-index: 99998; animation: fadeIn .4s ease;
     }
+    #proxi-popup .head {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:6px;
+    }
+    #proxi-popup .name { font-weight:600; font-size:13px; color:#111; }
+    #proxi-popup .close {
+      border:none; background:none; font-size:16px;
+      line-height:1; cursor:pointer; color:#555;
+    }
     @keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
 
     #proxi-root {
-      position: fixed; right: 30px; bottom: 85px;
+      position: fixed; right: 30px; bottom: 95px;
       width: 340px; height: 470px;
       display: none; opacity: 0; transform: translateY(10px);
       z-index: 99998; transition: transform .3s ease;
@@ -84,11 +91,31 @@
       overflow: hidden;
     }
 
+    #proxi-head {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 14px; background: rgba(255,255,255,0.35);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+    }
+    #proxi-head .left { display: flex; align-items: center; gap: 8px; }
+    #proxi-head .title { font-weight: 600; font-size: 13.5px; color: #111; }
+    #proxi-close {
+      background: transparent; border: none; font-size: 20px;
+      color: #444; cursor: pointer; display: none;
+    }
+    @media (max-width:600px) { #proxi-close { display:block; } }
+
     #proxi-messages {
       flex:1; padding:12px; overflow:auto;
       -webkit-overflow-scrolling:touch;
       transition: padding-bottom .2s ease;
     }
+    .msg {
+      max-width:82%; padding:8px 11px; border-radius:12px;
+      margin:6px 0; font-size:13.5px; line-height:1.45;
+    }
+    .bot { background: rgba(255,255,255,0.7); border: 1px solid var(--border); color: #111; }
+    .user { background: linear-gradient(135deg,var(--brand),var(--brand2)); color:#fff; margin-left:auto; }
 
     #proxi-input {
       display:flex; align-items:center; gap:8px;
@@ -105,17 +132,24 @@
       background:rgba(255,255,255,0.85);
       font-size:13.5px; outline:none;
     }
-
-    /* ✅ nieuw, modern pijl-icoon */
     #proxi-send {
       border:none; border-radius:12px;
       background:linear-gradient(135deg,var(--brand),var(--brand2));
       color:#fff; padding:10px 13px;
       cursor:pointer; display:flex; align-items:center; justify-content:center;
     }
+    /* ✅ Alleen pijltje aangepast — exact zoals je screenshot */
     #proxi-send svg {
-      width:16px; height:16px; fill:#fff;
-      transform: rotate(0deg);
+      width:15px; height:15px; fill:#fff;
+      transform:none;
+    }
+
+    #proxi-foot {
+      border-top: 1px solid var(--border);
+      padding: 6px 10px; font-size: 11.5px;
+      color: rgba(31,41,55,0.6);
+      text-align: center; background: rgba(255,255,255,0.4);
+      backdrop-filter: blur(10px);
     }
 
     @media (max-width:600px){
@@ -147,7 +181,12 @@
 
   const popup = document.createElement("div");
   popup.id = "proxi-popup";
-  popup.innerHTML = `<div class="body">${WELCOME}</div>`;
+  popup.innerHTML = `
+    <div class="head">
+      <div class="name">Proxi</div>
+      <button class="close">×</button>
+    </div>
+    <div class="body">${WELCOME}</div>`;
   document.body.appendChild(popup);
 
   const root = document.createElement("div");
@@ -162,7 +201,8 @@
       <div id="proxi-input">
         <input id="proxi-text" type="text" placeholder="Typ hier...">
         <button id="proxi-send" title="Verstuur">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2 10l15-6v12L2 10z"/></svg>
+          <!-- ✅ Dunne rechte pijl zoals je screenshot -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
       <div id="proxi-foot">Gebouwd door ChatPro-AI</div>
@@ -173,10 +213,20 @@
   const $text = document.getElementById("proxi-text");
   const $send = document.getElementById("proxi-send");
   const $close = document.getElementById("proxi-close");
+  const $popupClose = popup.querySelector(".close");
 
-  async function send() {
-    const val = $text.value.trim();
+  function addMsg(text, who) {
+    const div = document.createElement("div");
+    div.className = "msg " + (who || "bot");
+    div.innerHTML = text;
+    $msgs.appendChild(div);
+    $msgs.scrollTop = $msgs.scrollHeight;
+  }
+
+  async function send(text) {
+    const val = typeof text === "string" ? text : $text.value.trim();
     if (!val) return;
+    popup.style.display = "none";
     addMsg(val, "user");
     $text.value = "";
     try {
@@ -190,14 +240,6 @@
     } catch {
       addMsg("⚠️ De server reageert niet.", "bot");
     }
-  }
-
-  function addMsg(text, who) {
-    const div = document.createElement("div");
-    div.className = "msg " + (who || "bot");
-    div.innerHTML = text;
-    $msgs.appendChild(div);
-    $msgs.scrollTop = $msgs.scrollHeight;
   }
 
   let chatVisible = false;
@@ -219,20 +261,27 @@
 
   btn.onclick = () => (chatVisible ? closeChat() : openChat());
   $close.onclick = closeChat;
+  popup.onclick = openChat;
+  $popupClose.onclick = () => { popup.style.display = "none"; localStorage.setItem("proxi_popup_closed", "1"); };
   $send.onclick = send;
   $text.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); send(); } });
 
-  // Keyboard fix
+  // keyboard fix
   const vv = window.visualViewport;
   function lift() {
     if (!vv || !chatVisible || !isMobile()) return;
     const kb = window.innerHeight - (vv.height + vv.offsetTop);
-    root.style.transform = kb > 0 ? `translateY(-${kb}px)` : "translateY(0)";
+    if (kb > 0) {
+      root.style.transform = `translateY(-${kb}px)`;
+    } else {
+      root.style.transform = "translateY(0)";
+    }
   }
   vv && vv.addEventListener("resize", lift);
   vv && vv.addEventListener("scroll", lift);
   $text.addEventListener("focus", lift);
   $text.addEventListener("blur", () => root.style.transform = "translateY(0)");
+  window.addEventListener("orientationchange", () => setTimeout(lift, 250));
 
   if (!localStorage.getItem("proxi_popup_closed")) {
     setTimeout(() => (popup.style.display = "block"), 2000);
