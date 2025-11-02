@@ -4,7 +4,6 @@
   const WELCOME = "Hoi 👋 ik ben Proxi, de virtuele assistent van ChatPro-AI. Waar kan ik je vandaag mee helpen?";
   const SID_KEY = "proxi_session_id";
   const STATIC_BASE = DEFAULT_API;
-  const ICON_URL = `${STATIC_BASE}/static/proxi-icon.svg?v=3`;
 
   function sid() {
     let id = localStorage.getItem(SID_KEY);
@@ -33,22 +32,47 @@
 
     * { box-sizing: border-box; font-family: "Plus Jakarta Sans", -apple-system, system-ui, sans-serif; }
 
+    /* ✅ NIEUWE LUXE BUTTON STIJL */
     #proxi-button {
-      position: fixed; bottom: 25px; right: 30px;
-      width: 56px; height: 56px; border-radius: 50%;
-      background: linear-gradient(135deg,var(--brand),var(--brand2));
-      box-shadow: 0 8px 20px rgba(99,102,241,.4);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 99999; transition: transform .2s ease;
+      position: fixed;
+      bottom: 25px;
+      right: 30px;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #8b5cf6, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 99999;
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 18px rgba(99,102,241,0.35),
+                  inset 0 1px 2px rgba(255,255,255,0.4);
+      backdrop-filter: blur(12px) saturate(180%);
     }
-    #proxi-button:hover { transform: scale(1.06); }
-    #proxi-button img { width: 56px; height: 56px; border-radius: 50%; }
+    #proxi-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 22px rgba(99,102,241,0.45);
+    }
+    #proxi-button svg {
+      width: 28px;
+      height: 28px;
+      stroke: #fff;
+      stroke-width: 1.8;
+      fill: none;
+      filter: drop-shadow(0 0 2px rgba(255,255,255,0.4));
+    }
     #proxi-status-dot {
-      position: absolute; bottom: 5px; right: 5px;
-      width: 11px; height: 11px;
-      background: #22c55e; border-radius: 50%;
+      position: absolute;
+      bottom: 7px;
+      right: 7px;
+      width: 12px;
+      height: 12px;
+      background: #22c55e;
+      border-radius: 50%;
       border: 2px solid #fff;
-      box-shadow: 0 0 6px rgba(34,197,94,.7);
+      box-shadow: 0 0 6px rgba(34,197,94,0.7);
     }
 
     #proxi-popup {
@@ -138,7 +162,6 @@
       color:#fff; padding:10px 13px;
       cursor:pointer; display:flex; align-items:center; justify-content:center;
     }
-    /* ✅ Alleen pijltje aangepast — exact zoals je screenshot */
     #proxi-send svg {
       width:15px; height:15px; fill:#fff;
       transform:none;
@@ -165,18 +188,18 @@
   style.textContent = css;
   document.head.appendChild(style);
 
-  function fixVH() {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
-  }
-  fixVH();
-  window.addEventListener("resize", fixVH);
-  window.addEventListener("orientationchange", fixVH);
-
   // Elements
   const btn = document.createElement("div");
   btn.id = "proxi-button";
-  btn.innerHTML = `<img src="${ICON_URL}" alt="Proxi"/><div id="proxi-status-dot"></div>`;
+  btn.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-5 4V5z"/>
+      <circle cx="9" cy="10" r="1.2"/>
+      <circle cx="12" cy="10" r="1.2"/>
+      <circle cx="15" cy="10" r="1.2"/>
+    </svg>
+    <div id="proxi-status-dot"></div>
+  `;
   document.body.appendChild(btn);
 
   const popup = document.createElement("div");
@@ -201,7 +224,6 @@
       <div id="proxi-input">
         <input id="proxi-text" type="text" placeholder="Typ hier...">
         <button id="proxi-send" title="Verstuur">
-          <!-- ✅ Dunne rechte pijl zoals je screenshot -->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
@@ -271,11 +293,8 @@
   function lift() {
     if (!vv || !chatVisible || !isMobile()) return;
     const kb = window.innerHeight - (vv.height + vv.offsetTop);
-    if (kb > 0) {
-      root.style.transform = `translateY(-${kb}px)`;
-    } else {
-      root.style.transform = "translateY(0)";
-    }
+    if (kb > 0) root.style.transform = `translateY(-${kb}px)`;
+    else root.style.transform = "translateY(0)";
   }
   vv && vv.addEventListener("resize", lift);
   vv && vv.addEventListener("scroll", lift);
@@ -283,7 +302,5 @@
   $text.addEventListener("blur", () => root.style.transform = "translateY(0)");
   window.addEventListener("orientationchange", () => setTimeout(lift, 250));
 
-  if (!localStorage.getItem("proxi_popup_closed")) {
-    setTimeout(() => (popup.style.display = "block"), 2000);
-  }
+  if (!localStorage.getItem("proxi_popup_closed")) setTimeout(() => (popup.style.display = "block"), 2000);
 })();
