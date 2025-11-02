@@ -14,7 +14,6 @@
     return id;
   }
 
-  // ✅ voorkomt iOS zoom op invoerveld
   const meta = document.createElement("meta");
   meta.name = "viewport";
   meta.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
@@ -32,7 +31,7 @@
 
     * { box-sizing: border-box; font-family: "Plus Jakarta Sans", -apple-system, system-ui, sans-serif; }
 
-    /* ✅ NIEUWE LUXE BUTTON STIJL */
+    /* ✅ Luxe Apple-stijl widget */
     #proxi-button {
       position: fixed;
       bottom: 25px;
@@ -188,7 +187,6 @@
   style.textContent = css;
   document.head.appendChild(style);
 
-  // Elements
   const btn = document.createElement("div");
   btn.id = "proxi-button";
   btn.innerHTML = `
@@ -198,8 +196,7 @@
       <circle cx="12" cy="10" r="1.2"/>
       <circle cx="15" cy="10" r="1.2"/>
     </svg>
-    <div id="proxi-status-dot"></div>
-  `;
+    <div id="proxi-status-dot"></div>`;
   document.body.appendChild(btn);
 
   const popup = document.createElement("div");
@@ -288,13 +285,11 @@
   $send.onclick = send;
   $text.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); send(); } });
 
-  // keyboard fix
   const vv = window.visualViewport;
   function lift() {
     if (!vv || !chatVisible || !isMobile()) return;
     const kb = window.innerHeight - (vv.height + vv.offsetTop);
-    if (kb > 0) root.style.transform = `translateY(-${kb}px)`;
-    else root.style.transform = "translateY(0)";
+    root.style.transform = kb > 0 ? `translateY(-${kb}px)` : "translateY(0)";
   }
   vv && vv.addEventListener("resize", lift);
   vv && vv.addEventListener("scroll", lift);
@@ -302,5 +297,6 @@
   $text.addEventListener("blur", () => root.style.transform = "translateY(0)");
   window.addEventListener("orientationchange", () => setTimeout(lift, 250));
 
-  if (!localStorage.getItem("proxi_popup_closed")) setTimeout(() => (popup.style.display = "block"), 2000);
+  if (!localStorage.getItem("proxi_popup_closed"))
+    setTimeout(() => (popup.style.display = "block"), 2000);
 })();
